@@ -162,7 +162,7 @@ growproc(int n)
   uint sz;
   struct proc *curproc = myproc();
  
-
+  cprintf("GROWPROC");
 
   sz = curproc->sz;
 //  sz = curproc->last_page;
@@ -194,11 +194,11 @@ fork(void)
   }
 
 
- cprintf("SP2: %x\n", curproc->tf->esp);
+  cprintf("SP2: %x\n", curproc->tf->esp);
 
 
   // Copy process state from proc.
-  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz, curproc->last_page)) == 0){
+  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz, curproc->tf->esp)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;

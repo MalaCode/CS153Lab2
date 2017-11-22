@@ -248,6 +248,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
   }
+  cprintf("TOPPAGE: %x\n", newsz);
   return newsz;
 }
 
@@ -338,8 +339,10 @@ copyuvm(pde_t *pgdir, uint sz, uint lp)
     if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
       goto bad;
   }
- // cprintf("COPUVM SP2 : %x\n", lp);
-/* for(i = PGROUNDDOWN(lp-1); i < KERNBASE; i += PGSIZE){
+
+
+ cprintf("COPUVM SP2 : %x\n", lp);
+ for(i = PGROUNDDOWN(lp-1); i < KERNBASE; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
     if(!(*pte & PTE_P))
@@ -352,7 +355,7 @@ copyuvm(pde_t *pgdir, uint sz, uint lp)
     if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
       goto bad;
   }
-*/
+
   return d;
 
 bad:
