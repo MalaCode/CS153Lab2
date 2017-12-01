@@ -88,15 +88,15 @@ trap(struct trapframe *tf)
     }
     if (tf->trapno == T_PGFLT)
     {
-	if (myproc()->tf->esp < myproc()->last_page)
+	if (myproc()->tf->esp < myproc()->stackTop)
 	{
-	    myproc()->bottom_page += 1;
-	    cprintf("TOP: %x\n", myproc()->last_page );
-	    cprintf("NUM_PAGES: %d\n", myproc()->bottom_page);
-	    cprintf("TOP_NEWPAGE: %x\n", myproc()->last_page - ((myproc()->bottom_page-1)*PGSIZE));
-	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->last_page - ((myproc()->bottom_page)*PGSIZE));
+	    myproc()->pageNum += 1;
+	    cprintf("TOP: %x\n", myproc()->stackTop);
+	    cprintf("NUM_PAGES: %d\n", myproc()->pageNum);
+	    cprintf("TOP_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
+	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
 
-            allocuvm(myproc()->pgdir, myproc()->last_page - (myproc()->bottom_page*PGSIZE), myproc()->last_page - ((myproc()->bottom_page-1)*PGSIZE)); 
+            allocuvm(myproc()->pgdir, myproc()->stackTop - (myproc()->pageNum*PGSIZE), myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE)); 
 	}
     }
     // In user space, assume process misbehaved.

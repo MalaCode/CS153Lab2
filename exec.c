@@ -71,13 +71,13 @@ exec(char *path, char **argv)
    //cprintf("KERNBASE: %x\n", KERNBASE);
    //cprintf("PGSIZE: %d\n", PGSIZE);
 
-   curproc->last_page = allocuvm(pgdir, KERNBASE - PGSIZE, KERNBASE - 4);
-   curproc->bottom_page = 1;
+   curproc->stackTop = allocuvm(pgdir, KERNBASE - PGSIZE, KERNBASE - 4);
+   curproc->pageNum = 1;
   
-   cprintf("LAST_PAGE: %x\n", curproc->last_page);
-   cprintf("BOTTOM_PAGE: %x\n", curproc->bottom_page);
+   cprintf("stackTop: %x\n", curproc->stackTop);
+   cprintf("pageNum: %x\n", curproc->pageNum);
 
-   sp = curproc->last_page;
+   sp = curproc->stackTop;
    
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
