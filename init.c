@@ -28,7 +28,7 @@ main(void)
     }
     if(pid == 0){
 	
-	printf(1, "MYINIT\n");
+//	printf(1, "MYINIT\n");
 	
       exec("sh", argv);
       printf(1, "init: exec sh failed\n");

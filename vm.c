@@ -63,7 +63,7 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   char *a, *last;
   pte_t *pte;
  
-//  cprintf("SIZE: %x\n", va);
+  cprintf("SIZE: %x\n", size);
   a = (char*)PGROUNDDOWN((uint)va);
   last = (char*)PGROUNDDOWN(((uint)va) + size - 1);
   for(;;){
@@ -231,7 +231,9 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     return oldsz;
 
   a = PGROUNDUP(oldsz);
-  cprintf("A: %x\n", a);
+//  a = oldsz;
+  cprintf("ALLOC TOP: %x\n", newsz);
+  cprintf("ALLOC BOTTOM: %x\n", a);
   for(; a < newsz; a += PGSIZE){
     mem = kalloc();
     if(mem == 0){
@@ -239,7 +241,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       deallocuvm(pgdir, newsz, oldsz);
       return 0;
     }
-   cprintf("MEM: %x\n", mem);
+//   cprintf("MEM: %x\n", mem);
     memset(mem, 0, PGSIZE);
     if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
       cprintf("allocuvm out of memory (2)\n");
@@ -248,7 +250,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
   }
-  cprintf("TOPPAGE: %x\n", newsz);
+//  cprintf("TOPPAGE: %x\n", newsz);
   return newsz;
 }
 
@@ -317,7 +319,7 @@ clearpteu(pde_t *pgdir, char *uva)
 // Given a parent process's page table, create a copy
 // of it for a child.
 pde_t*
-copyuvm(pde_t *pgdir, uint sz, uint lp)
+copyuvm(pde_t *pgdir, uint sz, uint lp, uint pn)
 {
   pde_t *d;
   pte_t *pte;
@@ -341,7 +343,7 @@ copyuvm(pde_t *pgdir, uint sz, uint lp)
   }
 
 
- cprintf("COPUVM SP2 : %x\n", lp);
+ cprintf("COPUVM SP2 : %x\n", lp-pn*PGSIZE);
  for(i = PGROUNDDOWN(lp-1); i < KERNBASE; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");

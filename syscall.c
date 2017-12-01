@@ -17,9 +17,12 @@
 int
 fetchint(uint addr, int *ip)
 {
-  struct proc *curproc = myproc();
+//  struct proc *curproc = myproc();
 
-  if(addr >= curproc->sz || addr+4 > curproc->sz)
+//  cprintf("FETCHINT: %x\n", curproc->sz);
+ 
+
+  if(addr >= USER_TOP|| addr+4 > USER_TOP)
     return -1;
   *ip = *(int*)(addr);
   return 0;
@@ -32,12 +35,14 @@ int
 fetchstr(uint addr, char **pp)
 {
   char *s, *ep;
-  struct proc *curproc = myproc();
+  //struct proc *curproc = myproc();
 
-  if(addr >= curproc->sz)
+//  cprintf("FETCHSTR: %x\n", USER_TOP);
+
+  if(addr >= USER_TOP)
     return -1;
   *pp = (char*)addr;
-  ep = (char*)curproc->sz;
+  ep = (char*)USER_TOP;
   for(s = *pp; s < ep; s++){
     if(*s == 0)
       return s - *pp;
@@ -59,11 +64,13 @@ int
 argptr(int n, char **pp, int size)
 {
   int i;
-  struct proc *curproc = myproc();
+//  struct proc *curproc = myproc();
+
+//  cprintf("ARGPTR: %x\n", curproc->sz);
  
   if(argint(n, &i) < 0)
     return -1;
-  if(size < 0 || (uint)i >= curproc->sz || (uint)i+size > curproc->sz)
+  if(size < 0 || (uint)i >= USER_TOP|| (uint)i+size > USER_TOP)
     return -1;
   *pp = (char*)i;
   return 0;

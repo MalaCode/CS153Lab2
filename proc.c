@@ -125,6 +125,9 @@ userinit(void)
 
   p = allocproc();
   
+  //cprintf("USERINIT");
+  
+
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
@@ -162,7 +165,7 @@ growproc(int n)
   uint sz;
   struct proc *curproc = myproc();
  
-  cprintf("GROWPROC");
+//  cprintf("GROWPROC");
 
   sz = curproc->sz;
 //  sz = curproc->last_page;
@@ -194,11 +197,11 @@ fork(void)
   }
 
 
-  cprintf("SP2: %x\n", curproc->tf->esp);
+  // cprintf("SP2: %x\n", curproc->tf->esp);
 
 
   // Copy process state from proc.
-  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz, curproc->tf->esp)) == 0){
+  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz, curproc->last_page, curproc->bottom_page)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;

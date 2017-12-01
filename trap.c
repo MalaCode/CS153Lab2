@@ -88,11 +88,16 @@ trap(struct trapframe *tf)
     }
     if (tf->trapno == T_PGFLT)
     {
-//	if (myproc()->tf->esp < myproc()->last_page)
-//	{
-	    cprintf("DIFFERENCE: %d\n", myproc()->last_page - myproc()->tf->esp);
-            myproc()->last_page = allocuvm(myproc()->pgdir, myproc()->last_page-2*PGSIZE, (myproc()->last_page-PGSIZE-4)); 
-//	}
+	if (myproc()->tf->esp < myproc()->last_page)
+	{
+	    myproc()->bottom_page += 1;
+	    cprintf("TOP: %x\n", myproc()->last_page );
+	    cprintf("NUM_PAGES: %d\n", myproc()->bottom_page);
+	    cprintf("TOP_NEWPAGE: %x\n", myproc()->last_page - ((myproc()->bottom_page-1)*PGSIZE));
+	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->last_page - ((myproc()->bottom_page)*PGSIZE));
+
+            allocuvm(myproc()->pgdir, myproc()->last_page - (myproc()->bottom_page*PGSIZE), myproc()->last_page - ((myproc()->bottom_page-1)*PGSIZE)); 
+	}
     }
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "

@@ -68,14 +68,14 @@ exec(char *path, char **argv)
   clearpteu(pgdir, (char*)(sz - PGSIZE));
   sp = sz;
 
-   cprintf("KERNBASE: %x\n", KERNBASE);
+   //cprintf("KERNBASE: %x\n", KERNBASE);
    //cprintf("PGSIZE: %d\n", PGSIZE);
 
-   curproc->last_page = allocuvm(pgdir, KERNBASE - PGSIZE , KERNBASE-4);
-   curproc->bottom_page = curproc->last_page ;
+   curproc->last_page = allocuvm(pgdir, KERNBASE - PGSIZE, KERNBASE - 4);
+   curproc->bottom_page = 1;
   
    cprintf("LAST_PAGE: %x\n", curproc->last_page);
-   cprintf("BOTTOM_PAGE: %x\n", curproc->bottom_page - PGSIZE);
+   cprintf("BOTTOM_PAGE: %x\n", curproc->bottom_page);
 
    sp = curproc->last_page;
    
@@ -107,7 +107,7 @@ exec(char *path, char **argv)
  
  
   // Commit to the user image.
-  cprintf("SP: %x\n", sp);
+//  cprintf("SP: %x\n", sp);
 //  cprintf("DIFFERENCE: %d\n", curproc->last_page-sp);
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;
