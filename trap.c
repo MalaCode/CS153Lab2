@@ -95,8 +95,12 @@ trap(struct trapframe *tf)
 	    cprintf("NUM_PAGES: %d\n", myproc()->pageNum);
 	    cprintf("TOP_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
 	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
+	   
+  //	    cprintf("TRAP DIFFERENCE: %d\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE) -  myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
 
-            allocuvm(myproc()->pgdir, myproc()->stackTop - (myproc()->pageNum*PGSIZE), myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE)); 
+            allocuvm(myproc()->pgdir, myproc()->stackTop - (myproc()->pageNum*PGSIZE), myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
+	    return;	
+//	    cprintf("DONE?"); 
 	}
     }
     // In user space, assume process misbehaved.
