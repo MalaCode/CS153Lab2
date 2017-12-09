@@ -7,7 +7,8 @@
 // Key addresses for address space layout (see kmap in vm.c for layout)
 #define KERNBASE 0x80000000         // First kernel virtual address
 #define KERNLINK (KERNBASE+EXTMEM)  // Address where kernel is linked
-#define USER_TOP 0x7ffffffc	
+#define USER_TOP 0x7ffffffc	    // Address of the new top of the stack CS153	
+
 
 #define V2P(a) (((uint) (a)) - KERNBASE)
 #define P2V(a) (((void *) (a)) + KERNBASE)
