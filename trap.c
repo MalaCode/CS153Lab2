@@ -86,21 +86,36 @@ trap(struct trapframe *tf)
               tf->trapno, cpuid(), tf->eip, rcr2());
       panic("trap");
     }
+    //Added case to handle page faults CS153
     if (tf->trapno == T_PGFLT)
     {
+	//Added a check to determine when the stack has run out of space using kalloc() CS153
+	if (kalloc() == 0)
+	{
+	    cprintf("OUT OF STACK SPACE\n");
+	    cprintf("STOPPED AT %x\n", (myproc()->tf->esp));
+	    cprintf("TOP OF CODE + BUFFER: %x\n", myproc()->sz);
+	    cprintf("NUM PAGES %d\n", myproc()->pageNum);
+	    myproc()->killed = 1;
+	    exit();
+	
+	}
+
+	//Check to make sure the stack is properly allocated CS153
 	if (myproc()->tf->esp < myproc()->stackTop)
 	{
 	    myproc()->pageNum += 1;
-	    cprintf("TOP: %x\n", myproc()->stackTop);
-	    cprintf("NUM_PAGES: %d\n", myproc()->pageNum);
-	    cprintf("TOP_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
-	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
+//	    cprintf("TOP: %x\n", myproc()->stackTop);
+//	    cprintf("NUM_PAGES: %d\n", myproc()->pageNum);
+//	    cprintf("TOP_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
+//	    cprintf("BOTTOM_NEWPAGE: %x\n", myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
+//	    cprintf("SP: %x\n", myproc()->tf->esp);
 	   
-  //	    cprintf("TRAP DIFFERENCE: %d\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE) -  myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
+ // 	    cprintf("TRAP DIFFERENCE: %d\n", myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE) -  myproc()->stackTop - ((myproc()->pageNum)*PGSIZE));
 
             allocuvm(myproc()->pgdir, myproc()->stackTop - (myproc()->pageNum*PGSIZE), myproc()->stackTop - ((myproc()->pageNum-1)*PGSIZE));
 	    return;	
-//	    cprintf("DONE?"); 
+	    cprintf("DONE?"); 
 	}
     }
     // In user space, assume process misbehaved.

@@ -63,7 +63,7 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   char *a, *last;
   pte_t *pte;
  
-  cprintf("SIZE: %x\n", size);
+//  cprintf("SIZE: %x\n", size);
   a = (char*)PGROUNDDOWN((uint)va);
   last = (char*)PGROUNDDOWN(((uint)va) + size - 1);
   for(;;){
@@ -232,11 +232,12 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
 
   a = PGROUNDUP(oldsz);
 //  a = oldsz;
-  cprintf("ALLOC TOP: %x\n", newsz);
-  cprintf("ALLOC BOTTOM: %x\n", a);
+//  cprintf("ALLOC TOP: %x\n", newsz);
+//  cprintf("ALLOC BOTTOM: %x\n", a);
   for(; a < newsz; a += PGSIZE){
     mem = kalloc();
     if(mem == 0){
+//	cprintf("SP: %x\n", myproc()->tf->esp);
       cprintf("allocuvm out of memory\n");
       deallocuvm(pgdir, newsz, oldsz);
       return 0;
@@ -342,8 +343,8 @@ copyuvm(pde_t *pgdir, uint sz, uint lp, uint pn)
       goto bad;
   }
 
-
- cprintf("COPUVM SP2 : %x\n", lp-pn*PGSIZE);
+  //Added second loop so that the stack is correctly copied over to the new process CS153
+// cprintf("COPUVM SP2 : %x\n", lp-pn*PGSIZE);
  for(i = PGROUNDDOWN(lp-1); i < KERNBASE; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");

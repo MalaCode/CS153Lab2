@@ -201,12 +201,15 @@ fork(void)
 
 
   // Copy process state from proc.
+  // Changed the parameters such that it takes in the top of the stack and number of pages allocated to the stack CS153
   if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz, curproc->stackTop, curproc->pageNum)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;
     return -1;
   }
+
+  // Make sure that all paramters added by our code are transfered to the new process CS153
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;

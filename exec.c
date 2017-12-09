@@ -62,6 +62,7 @@ exec(char *path, char **argv)
 
   // Allocate two pages at the next page boundary.
   // Make the first inaccessible.  Use the second as the user stack.
+  // Left in for buffer page before code section CS153
   sz = PGROUNDUP(sz);
   if((sz = allocuvm(pgdir, sz, sz + PGSIZE)) == 0)
     goto bad;
@@ -71,11 +72,12 @@ exec(char *path, char **argv)
    //cprintf("KERNBASE: %x\n", KERNBASE);
    //cprintf("PGSIZE: %d\n", PGSIZE);
 
+   //Allocate a page right below KERNBASE to become the new stack CS153
    curproc->stackTop = allocuvm(pgdir, KERNBASE - PGSIZE, KERNBASE - 4);
    curproc->pageNum = 1;
   
-   cprintf("stackTop: %x\n", curproc->stackTop);
-   cprintf("pageNum: %x\n", curproc->pageNum);
+  // cprintf("stackTop: %x\n", curproc->stackTop);
+  // cprintf("pageNum: %x\n", curproc->pageNum);
 
    sp = curproc->stackTop;
    
